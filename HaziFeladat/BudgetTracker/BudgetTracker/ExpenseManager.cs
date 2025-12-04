@@ -21,7 +21,7 @@ namespace BudgetTracker
             // 0-nal kisebb osszeg ervenytelen
             if (amount <= 0)
             {
-                throw new ArgumentException("Az összegnek pozitívnak kell lennie!");
+                throw new ArgumentException("Az osszegnek pozitivnak kell lennie!");
             }
 
             var newItem = new ExpenseItem(name, amount, category, DateTime.Now);

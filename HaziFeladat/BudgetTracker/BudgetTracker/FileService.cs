@@ -19,9 +19,7 @@ namespace BudgetTracker
             }
             catch (Exception ex)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"[Fajl Hiba] Sikertelen mentes: {ex.Message}");
-                Console.ResetColor();
+                ConsoleHelper.PrintError($"[Fajl Hiba] Sikertelen mentes: {ex.Message}");
             }
         }
 
@@ -40,9 +38,7 @@ namespace BudgetTracker
             }
             catch (Exception ex)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"[Fajl Hiba] Sikertelen betoltes: {ex.Message}");
-                Console.ResetColor();
+                ConsoleHelper.PrintError($"[Fajl Hiba] Sikertelen betoltes: {ex.Message}");
                 return new List<ExpenseItem>();
             }
         }

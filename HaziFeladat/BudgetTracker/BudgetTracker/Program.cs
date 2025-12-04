@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace BudgetTracker
 {
@@ -8,16 +9,12 @@ namespace BudgetTracker
 
         static void Main(string[] args)
         {
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("=== Budget Tracker ===");
-            Console.ResetColor();
+            ConsoleHelper.PrintHeader("=== Budget Tracker ===");
             bool running = true;
 
             while (running)
             {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("\nFOMENU:");
-                Console.ResetColor();
+                ConsoleHelper.PrintHighlight("\nFOMENU:");
                 Console.WriteLine("1. Uj kiadas hozzaadasa");
                 Console.WriteLine("2. Kiadasok listazasa");
                 Console.WriteLine("3. Statisztikak");
@@ -45,31 +42,24 @@ namespace BudgetTracker
                             break;
                         case "5":
                             running = false;
-                            Console.ForegroundColor = ConsoleColor.Magenta;
-                            Console.WriteLine("Tovabbi szep napot!");
-                            Console.ResetColor();
+                            ConsoleHelper.PrintSuccess("Tovabbi szep napot!");
                             break;
                         default:
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("Ismeretlen parancs, kerlek 1-5 kozotti szamot valassz!");
-                            Console.ResetColor();
+                            ConsoleHelper.PrintError("Ismeretlen parancs, kerlek 1-5 kozotti szamot valassz!");
                             break;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"\nError: {ex.Message}");
-                    Console.ResetColor();
+                    ConsoleHelper.PrintError($"\nError: {ex.Message}");
                 }
             }
         }
 
         static void MenuAddExpense()
         {
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("\n--- Uj kiadas ---");
-            Console.ResetColor();
+            ConsoleHelper.PrintHeader("\n--- Uj kiadas ---");
+
             Console.Write("Megnevezes: ");
             string name = Console.ReadLine();
 
@@ -80,9 +70,7 @@ namespace BudgetTracker
             int amount = int.Parse(Console.ReadLine());
 
             manager.AddExpense(name, amount, category);
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(">> Sikeresen rogzites");
-            Console.ResetColor();
+            ConsoleHelper.PrintSuccess(">> Sikeresen rogzites");
         }
 
         static void MenuListExpenses()
@@ -97,34 +85,26 @@ namespace BudgetTracker
 
             if (list.Count == 0)
             {
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine("Nincs eleg adat a statisztikahoz.");
-                Console.ResetColor();
+                ConsoleHelper.PrintError("Nincs eleg adat a statisztikahoz.");
                 return;
             }
 
             int total = StatisticsService.CalculateTotal(list);
+
             Console.Write("\nTeljes koltes: ");
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"{total} Ft");
-            Console.ResetColor();
+            ConsoleHelper.PrintHighlight($"{total} Ft");
 
             var expensive = StatisticsService.GetMostExpensiveItem(list);
             Console.Write("Legdragabb tetel: ");
             Console.Write($"{expensive.Name} ");
-
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"({expensive.Amount} Ft)");
-            Console.ResetColor();
+            ConsoleHelper.PrintHighlight($"({expensive.Amount} Ft)");
 
             StatisticsService.PrintCategoryBreakdown(list);
         }
 
         static void MenuSearch()
         {
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("\n--- Keresés ---");
-            Console.ResetColor();
+            ConsoleHelper.PrintHeader("\n--- Kereses ---");
 
             Console.Write("Mit keresel?: ");
             string text = Console.ReadLine();
@@ -133,38 +113,29 @@ namespace BudgetTracker
 
             if (results.Count > 0)
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"Találatok száma: {results.Count}");
-                Console.ResetColor();
+                ConsoleHelper.PrintSuccess($"Talalatok szama: {results.Count}");
                 PrintList(results);
             }
             else
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Nincs találat.");
-                Console.ResetColor();
+                ConsoleHelper.PrintError("Nincs talalat.");
             }
         }
 
         static void PrintList(List<ExpenseItem> list)
         {
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine($"\n--- Lista ({list.Count} tétel) ---");
-            Console.ResetColor();
+            ConsoleHelper.PrintHeader($"\n--- Lista ({list.Count} tetel) ---");
 
             if (list.Count == 0)
             {
-                Console.WriteLine("Nincs megjeleníthető adat.");
+                Console.WriteLine("Nincs megjelenitheto adat.");
                 return;
             }
 
             foreach (var item in list)
             {
                 Console.Write($"[{item.Date.ToShortDateString()}] {item.Name} ({item.Category}): ");
-
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine($"{item.Amount} Ft");
-                Console.ResetColor();
+                ConsoleHelper.PrintHighlight($"{item.Amount} Ft");
             }
         }
     }
