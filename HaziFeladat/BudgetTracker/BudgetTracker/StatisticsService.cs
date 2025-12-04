@@ -6,6 +6,32 @@ namespace BudgetTracker
 {
     public static class StatisticsService
     {
-        // TODO: linq
+        // Osszes koltes
+        public static int CalculateTotal(List<ExpenseItem> items)
+        {
+            return items.Sum(x => x.Amount);
+        }
+
+       // Legdragabb tetel meghatarozasa
+        public static ExpenseItem GetMostExpensiveItem(List<ExpenseItem> items)
+        {
+            if (items.Count == 0) return null;
+            return items.OrderByDescending(x => x.Amount).First();
+        }
+
+        // Osszesites kategoriankent
+        public static void PrintCategoryBreakdown(List<ExpenseItem> items)
+        {
+            Console.WriteLine("\n--- Kategóriánkénti összesítés ---");
+
+            var groups = items.GroupBy(x => x.Category)
+                              .Select(g => new { Category = g.Key, Sum = g.Sum(i => i.Amount) })
+                              .OrderByDescending(g => g.Sum);
+
+            foreach (var group in groups)
+            {
+                Console.WriteLine($"- {group.Category}: {group.Sum} Ft");
+            }
+        }
     }
 }
