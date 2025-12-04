@@ -22,7 +22,9 @@ namespace BudgetTracker
         // Osszesites kategoriankent
         public static void PrintCategoryBreakdown(List<ExpenseItem> items)
         {
+            Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("\n--- Kategóriánkénti összesítés ---");
+            Console.ResetColor();
 
             var groups = items.GroupBy(x => x.Category)
                               .Select(g => new { Category = g.Key, Sum = g.Sum(i => i.Amount) })
@@ -30,7 +32,10 @@ namespace BudgetTracker
 
             foreach (var group in groups)
             {
-                Console.WriteLine($"- {group.Category}: {group.Sum} Ft");
+                Console.Write($"- {group.Category}: ");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"{group.Sum} Ft");
+                Console.ResetColor();
             }
         }
     }

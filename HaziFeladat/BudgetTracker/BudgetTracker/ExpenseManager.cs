@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BudgetTracker
 {
@@ -33,6 +34,13 @@ namespace BudgetTracker
         public List<ExpenseItem> GetAllExpenses()
         {
             return _items;
+        }
+
+        public List<ExpenseItem> SearchExpenses(string searchTerm)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm)) return new List<ExpenseItem>();
+
+            return _items.Where(x => x.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
         }
     }
 }

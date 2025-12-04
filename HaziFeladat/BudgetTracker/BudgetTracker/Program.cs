@@ -8,16 +8,21 @@ namespace BudgetTracker
 
         static void Main(string[] args)
         {
-            Console.WriteLine("=== Budget Tracker 2025 ===");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("=== Budget Tracker ===");
+            Console.ResetColor();
             bool running = true;
 
             while (running)
             {
+                Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("\nFOMENU:");
+                Console.ResetColor();
                 Console.WriteLine("1. Uj kiadas hozzaadasa");
                 Console.WriteLine("2. Kiadasok listazasa");
                 Console.WriteLine("3. Statisztikak");
-                Console.WriteLine("4. Kilepes");
+                Console.WriteLine("4. Kereses nev alapjan");
+                Console.WriteLine("5. Kilepes");
                 Console.Write("Valasztas: ");
 
                 string choice = Console.ReadLine();
@@ -36,11 +41,18 @@ namespace BudgetTracker
                             MenuShowStatistics();
                             break;
                         case "4":
+                            MenuSearch();
+                            break;
+                        case "5":
                             running = false;
+                            Console.ForegroundColor = ConsoleColor.Magenta;
                             Console.WriteLine("Tovabbi szep napot!");
+                            Console.ResetColor();
                             break;
                         default:
-                            Console.WriteLine("Ismeretlen parancs, kerlek 1-4 kozotti szamot valassz!");
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Ismeretlen parancs, kerlek 1-5 kozotti szamot valassz!");
+                            Console.ResetColor();
                             break;
                     }
                 }
@@ -55,7 +67,9 @@ namespace BudgetTracker
 
         static void MenuAddExpense()
         {
+            Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("\n--- Uj kiadas ---");
+            Console.ResetColor();
             Console.Write("Megnevezes: ");
             string name = Console.ReadLine();
 
@@ -66,25 +80,15 @@ namespace BudgetTracker
             int amount = int.Parse(Console.ReadLine());
 
             manager.AddExpense(name, amount, category);
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(">> Sikeresen rogzites");
+            Console.ResetColor();
         }
 
         static void MenuListExpenses()
         {
             var list = manager.GetAllExpenses();
-
-            Console.WriteLine($"\n--- Lista ({list.Count} tetel) ---");
-
-            if (list.Count == 0)
-            {
-                Console.WriteLine("Meg nincs rogzitett adat.");
-                return;
-            }
-
-            foreach (var item in list)
-            {
-                Console.WriteLine($"[{item.Date.ToShortDateString()}] {item.Name} ({item.Category}): {item.Amount} Ft");
-            }
+            PrintList(list);
         }
 
         static void MenuShowStatistics()
@@ -93,17 +97,75 @@ namespace BudgetTracker
 
             if (list.Count == 0)
             {
+                Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine("Nincs eleg adat a statisztikahoz.");
+                Console.ResetColor();
                 return;
             }
 
             int total = StatisticsService.CalculateTotal(list);
-            Console.WriteLine($"\nTeljes koltes: {total} Ft");
+            Console.Write("\nTeljes koltes: ");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"{total} Ft");
+            Console.ResetColor();
 
             var expensive = StatisticsService.GetMostExpensiveItem(list);
-            Console.WriteLine($"Legdragabb tetel: {expensive.Name} ({expensive.Amount} Ft)");
+            Console.Write("Legdragabb tetel: ");
+            Console.Write($"{expensive.Name} ");
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"({expensive.Amount} Ft)");
+            Console.ResetColor();
 
             StatisticsService.PrintCategoryBreakdown(list);
+        }
+
+        static void MenuSearch()
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("\n--- Keresés ---");
+            Console.ResetColor();
+
+            Console.Write("Mit keresel?: ");
+            string text = Console.ReadLine();
+
+            var results = manager.SearchExpenses(text);
+
+            if (results.Count > 0)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"Találatok száma: {results.Count}");
+                Console.ResetColor();
+                PrintList(results);
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Nincs találat.");
+                Console.ResetColor();
+            }
+        }
+
+        static void PrintList(List<ExpenseItem> list)
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine($"\n--- Lista ({list.Count} tétel) ---");
+            Console.ResetColor();
+
+            if (list.Count == 0)
+            {
+                Console.WriteLine("Nincs megjeleníthető adat.");
+                return;
+            }
+
+            foreach (var item in list)
+            {
+                Console.Write($"[{item.Date.ToShortDateString()}] {item.Name} ({item.Category}): ");
+
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"{item.Amount} Ft");
+                Console.ResetColor();
+            }
         }
     }
 }
